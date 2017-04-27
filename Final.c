@@ -20,3 +20,13 @@ int main(void)
 	return 0;
 }
 
+
+/*
+*	Generador
+*	descripcion:	En esta funcion se generan los examenes en base a un archivo tipo vcs
+*			que funciona como banco de preguntas de un tema. En la funcion se lee
+*			cada renglon del archivo, que separa por campos las preguntas, respuestas
+*			correctas, respuestas posibles y puntaje por pregunta. La funcion elige 
+*			una cantidad (indicada por el usuario) de preguntas del campo y las pega
+*			un archivo, cuyo nombre es indicado por el usuario.
+*/
