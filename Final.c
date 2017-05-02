@@ -1,60 +1,241 @@
-/*
-*    @File/archivo       Final.c 
-*    @Brief/resumen      El objetivo del programa es formar 3 módulos que permitan la
-*                        creación, aplicación y valoración de un examen.
-*                        El máximo de preguntas admitidas en la base de datos será de 
-*                        50. 
-*                        
-*    @Author/autor        Bruno Valerio Fernández, Abdín Alejandro Alcazar Terán, Benjamín Menchaca Reyna
-*    @Date/fecha          14-05-17
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-	Cambio Prueba
-*/
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-
-void GENERADOR(void);
-void APLICADOR(void);
-void ERROR(int value);
-
-int main(void)
+struct elemento //Definicion de un struct que contiene un char y un puntero.
 {
-	return 0;
+    char pregunta[200];
+    char incisoA[50];
+    char incisoB[50];
+    char incisoC[50];
+    char incisoD[50];
+    int puntos;
+    struct elemento *punt;
+};
+typedef struct elemento Preguntas;
+
+int Busca_Alumno(char nombre[50],char apellido[25],int cuenta);
+int Leer();
+int main()
+{
+    FILE *sal,*Examenin;
+    char Linea[250];
+    char s[2]= ",";
+    char *token;
+    char nombre[50],apellido[50];
+    int cuenta,x;
+
+        sal =fopen("Examen.txt","w");
+			/*
+            printf("Copia: %s\n",nuevo->pregunta);
+            fprintf(sal ," %s\n",nuevo->pregunta );
+            printf("Copia: %s\n",nuevo->incisoA);
+            fprintf(sal ," %s\n",nuevo->incisoA );
+            printf("Copia: %s\n",nuevo->incisoB);
+            fprintf(sal ," %s\n",nuevo->incisoB );
+            printf("Copia: %s\n",nuevo->incisoC);
+            fprintf(sal ," %s\n",nuevo->incisoC );
+            printf("Copia: %s\n",nuevo->incisoD);
+            fprintf(sal ," %s\n",nuevo->incisoD );
+            printf("Copia: %d\n",nuevo->puntos);
+            fprintf(sal ," %d\n",nuevo->puntos );
+ 			*/
+   		fclose(sal);
+   
+    
+    printf("ingresa nombre,apellido y numero de cuenta\n");
+    scanf("%s %s %d",nombre,apellido,&cuenta);
+    printf("Nombre: %s\nApellido: %s\nCuenta: %d\n",nombre,apellido,cuenta);
+    Busca_Alumno(nombre,apellido,cuenta);
+    
+    return 0;
 }
 
-/*
-*	Generador
-*	descripcion:	Esta funcion envia mensajes de error al usuario en caso de
-*			ejecutar de manera incorrecta el programa.
-*/
-void ERROR(int value)
-{
-	system("clear");	
-	if(value==1)
-		printf("El archivo indicado no existe. Intentar con uno valido./n");
 
+int Leer()
+{
+	char pregunta[200];
+    char incisoA[50];
+    char incisoB[50];
+    char incisoC[50];
+    char incisoD[50];
+    int puntos,npreg;
+	FILE *in;
+	
+
+	printf("Cuantas preguntas quieres? \n");
+	scanf("%d",&npreg);
+	
+	Preguntas *lista=malloc(npreg);
+	
+	in = fopen("Banco.csv", "r");
+
+	
+
+ 	fclose(in);
+	
 }
 
-/*
-*	Generador
-*	descripcion:	En esta funcion se generan los examenes en base a un archivo tipo vcs
-*			que funciona como banco de preguntas de un tema. En la funcion se lee
-*			cada renglon del archivo, que separa por campos las preguntas, respuestas
-*			correctas, respuestas posibles y puntaje por pregunta. La funcion elige 
-*			una cantidad (indicada por el usuario) de preguntas del campo y las pega
-*			un archivo, cuyo nombre es indicado por el usuario.
-*/
-void GENERADOR(void)
+int Busca_Alumno(char nombre[50] ,char apellido[50] ,int cuenta)
 {
-	char seed[30];
-	FILE *fp;
-
-	printf("Escribe el nombre del archivo del cual se van a extraer las preguntas.\n");
-	scanf("%s",seed);
-	getchar();
-	if((fp=fopen(seed,"rt"))==NULL)
-		ERROR(1);
+    FILE *Base;
+    int x=1;
+    char s[2]= ",";
+    char *token;
+    char Line[250];
+    char Datos[225];
+    
+	Base = fopen("Alumnos.txt","r");
+    if (Base==NULL)
+	{
+		printf("El archivo no existe.\n");
+		exit(1);
+    }
+    while(fgets(Line,sizeof(Line),Base) !=NULL)
+    {
+        token = strtok(Line, s);
+        
+        while( token != NULL)
+            
+        {
+            printf("\n" );
+            x=strcmp(nombre,token);
+            
+            if(x==0)
+            {
+                 printf("El alumno esta en la lista\n");
+                
+                return x;
+            }            
+             token = strtok(NULL, s);     
+        }
+        printf("El Alumno no esta en la lista\n");
+        return x;
+    }
+    
+     fclose(Base);
+     return x;
 }
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct elemento //Definicion de un struct que contiene un char y un puntero.
+{
+    char pregunta[200];
+    char incisoA[50];
+    char incisoB[50];
+    char incisoC[50];
+    char incisoD[50];
+    int puntos;
+    struct elemento *punt;
+};
+typedef struct elemento Preguntas;
+
+int Busca_Alumno(char nombre[50],char apellido[25],int cuenta);
+int Leer();
+int main()
+{
+    FILE *sal,*Examenin;
+    char Linea[250];
+    char s[2]= ",";
+    char *token;
+    char nombre[50],apellido[50];
+    int cuenta,x;
+
+        sal =fopen("Examen.txt","w");
+			/*
+            printf("Copia: %s\n",nuevo->pregunta);
+            fprintf(sal ," %s\n",nuevo->pregunta );
+            printf("Copia: %s\n",nuevo->incisoA);
+            fprintf(sal ," %s\n",nuevo->incisoA );
+            printf("Copia: %s\n",nuevo->incisoB);
+            fprintf(sal ," %s\n",nuevo->incisoB );
+            printf("Copia: %s\n",nuevo->incisoC);
+            fprintf(sal ," %s\n",nuevo->incisoC );
+            printf("Copia: %s\n",nuevo->incisoD);
+            fprintf(sal ," %s\n",nuevo->incisoD );
+            printf("Copia: %d\n",nuevo->puntos);
+            fprintf(sal ," %d\n",nuevo->puntos );
+ 			*/
+   		fclose(sal);
+   
+    
+    printf("ingresa nombre,apellido y numero de cuenta\n");
+    scanf("%s %s %d",nombre,apellido,&cuenta);
+    printf("Nombre: %s\nApellido: %s\nCuenta: %d\n",nombre,apellido,cuenta);
+    Busca_Alumno(nombre,apellido,cuenta);
+    
+    return 0;
+}
+
+
+int Leer()
+{
+	char pregunta[200];
+    char incisoA[50];
+    char incisoB[50];
+    char incisoC[50];
+    char incisoD[50];
+    int puntos,npreg;
+	FILE *in;
+	
+
+	printf("Cuantas preguntas quieres? \n");
+	scanf("%d",&npreg);
+	
+	Preguntas *lista=malloc(npreg);
+	
+	in = fopen("Banco.csv", "r");
+
+	
+
+ 	fclose(in);
+	
+}
+
+int Busca_Alumno(char nombre[50] ,char apellido[50] ,int cuenta)
+{
+    FILE *Base;
+    int x=1;
+    char s[2]= ",";
+    char *token;
+    char Line[250];
+    char Datos[225];
+    
+	Base = fopen("Alumnos.txt","r");
+    if (Base==NULL)
+	{
+		printf("El archivo no existe.\n");
+		exit(1);
+    }
+    while(fgets(Line,sizeof(Line),Base) !=NULL)
+    {
+        token = strtok(Line, s);
+        
+        while( token != NULL)
+            
+        {
+            printf("\n" );
+            x=strcmp(nombre,token);
+            
+            if(x==0)
+            {
+                 printf("El alumno esta en la lista\n");
+                
+                return x;
+            }            
+             token = strtok(NULL, s);     
+        }
+        printf("El Alumno no esta en la lista\n");
+        return x;
+    }
+    
+     fclose(Base);
+     return x;
+}
+
 
