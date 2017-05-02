@@ -7,6 +7,9 @@
 *                        
 *    @Author/autor        Bruno Valerio Fernández, Abdín Alejandro Alcazar Terán, Benjamín Menchaca Reyna
 *    @Date/fecha          14-05-17
+
+
+	Cambio Prueba
 */
 #include<stdio.h>
 #include<stdlib.h>
