@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -117,3 +116,8 @@ int Busca_Alumno(char nombre[50] ,char apellido[50] ,int cuenta)
      fclose(Base);
      return x;
 }
+
+
+
+
+//new test
