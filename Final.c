@@ -121,3 +121,4 @@ int Busca_Alumno(char nombre[50] ,char apellido[50] ,int cuenta)
 
 
 //new test
+//mensaje para benja
