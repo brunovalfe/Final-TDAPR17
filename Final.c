@@ -118,6 +118,141 @@ int Busca_Alumno(char nombre[50] ,char apellido[50] ,int cuenta)
 }
 
 
+/*
+*	@Brief/resumen		La función permite hacer una recopilación de todas las 			
+*						preguntas y las muestra en pantalla.
+*						Al principio, se pedirán los datos completos del alumno, nombre 
+*						y número de cuenta.
+*						Los datos del alumno al concluir el test se verán guardados en 
+*						un archivo, en él estarán guardadas las respuestas del alumno. 
+*				
+*	@Author/autor		Bruno Valerio Fernández, Abdín Alejandro Alcazar Terán, Benjamín Menchaca Reyna
+*	
+*	@Return 				void
+*/
+void aplicadorExamenes(void){
+
+	FILE *bancoAlumnos;
+	FILE *archivoExamen;
+	FILE *archivoAlumno;
+
+	char lineaAlumnos[300];
+	char numeroCuenta[20];
+
+	char nombreAlumno[100];
+	char cuentaAlumno[20];
+
+	char nombreExamen[30];
+
+	char lineaArchivo[300];
+	char pregunta[200];	
+	char incisoA[100], incisoB[100],  incisoC[100],  incisoD[100];
+	char respuesta_correcta, respuesta;
+	int valor;
+	int numeroPregunta;
+
+	int contador_1=0;
+	int resultado=0;
+	int i;
+
+	char lineaImprimir[100];
+
+
+	bancoAlumnos=fopen("bancoAlumnos.txt","rt");
+	if(bancoAlumnos==NULL){printf("no existe el archivo\n"); exit(1);}
+
+	archivoAlumno=fopen("archivoAlumno.txt","wt");
+
+
+	printf("\n-aplicadorExamenes-\n");
+
+	printf("\nIngrese el nombre del examen: ");
+	fgets(nombreExamen,30,stdin);
+
+	for(i=0;i<=30;i++) if(nombreExamen[i]=='\n') nombreExamen[i]='\0';
+
+	puts(nombreExamen);
+
+	archivoExamen=fopen(nombreExamen,"rt");
+	if(archivoExamen==NULL){printf("no existe el archivo\n"); exit(1);}
+
+	printf("\nIngrese su número de cuenta: ");
+	scanf("%s",numeroCuenta);
+	getchar();
+
+	while(fgets(lineaAlumnos,300,bancoAlumnos)!=NULL){
+
+		sscanf(lineaAlumnos,"%[^|]|%s",cuentaAlumno,nombreAlumno);
+
+		if(strstr(lineaAlumnos,numeroCuenta)!=NULL){
+
+			printf("Usuario: %s \n",nombreAlumno);
+
+			strcpy(lineaImprimir,nombreAlumno);
+			strcat(lineaImprimir,numeroCuenta);
+//IDENTIFICADOR DEL EXAMEN|CUENTA|CALIFICACIÓN|TIEMPO|RESPUESTAS|CORRECTAS(#)|PREGUNTAS(#)|TIEMPO TOTAL| MÁXIMO DE PUNTOS QUE SE PUEDE TENER
+		}
+	}
+
+
+	while(fgets(lineaArchivo,300,archivoExamen)!=NULL){
+
+			sscanf(lineaArchivo,"%d|%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%c|%d",&numeroPregunta,pregunta,incisoA,incisoB,incisoC,incisoD,&respuesta_correcta,&valor);
+
+			contador_1++;
+	}
+
+		//for(i=0;i<=100;i++) if(lineaImprimir[i]=='\n') lineaImprimir[i]='\t';
+
+		//fprintf(archivoAlumno,"%d ",(resultado*10)/contador_1);
+		//fputs(lineaImprimir,archivoAlumno);//IDENTIFICADOR DEL EXAMEN|CUENTA|CALIFICACIÓN|TIEMPO|RESPUESTAS|CORRECTAS(#)|PREGUNTAS(#)|TIEMPO TOTAL| MÁXIMO DE PUNTOS QUE SE PUEDE TENER
+
+
+	fclose(bancoAlumnos);
+	fclose(archivoExamen);
+	fclose(archivoAlumno);
+}
+
+void funcionRand(){
+
+#include<stdio.h>
+
+int main(){
+ 
+    int arreglo[10];
+    int aux = 0;
+	int i; 
+
+    srand(time(0));
+ 
+    for(i = 0; i < 10; i++){
+        aux = rand() % 10 + 1;
+ 
+        int aux2 = 0;
+ 
+        while(aux2 < i){
+ 
+            if(aux != arreglo[aux2])
+                aux2++;
+ 
+            else{
+                    aux =rand() % 10 + 1;
+                    aux2 = 0;
+ 
+                }
+        }
+ 
+        arreglo[i] = aux;
+ 
+     printf("%d ",arreglo[i]);
+    }
+ 
+    return 0;
+}
+
+
+}
+
 
 
 //new test
