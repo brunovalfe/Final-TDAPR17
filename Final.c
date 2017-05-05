@@ -1,122 +1,117 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+/*
+*	@File/archivo 		generadorExamenes.c 
+*	@Brief/resumen 		El objetivo del programa es formar 3 módulos que permitan la
+*						creación, aplicación y valoración de un examen.
+*						El máximo de preguntas admitidas en la base de datos será de 
+*						50. 
+*						
+*	@Author/autor		Bruno Valerio Fernández, Abdín Alejandro Alcazar Terán, Benjamín Menchaca Reyna
+*	@Date/fecha			01-01-01
+*
+*/
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
 
-struct elemento //Definicion de un struct que contiene un char y un puntero.
+void creadorExamenes(void);
+void aplicadorExamenes(void);
+void calificadorExamenes(void);
+
+int main(void)
 {
-    char pregunta[200];
-    char incisoA[50];
-    char incisoB[50];
-    char incisoC[50];
-    char incisoD[50];
-    int puntos;
-    struct elemento *punt;
-};
-typedef struct elemento Preguntas;
+	char opcion;	
 
-int Busca_Alumno(char nombre[50],char apellido[25],int cuenta);
-int Leer();
-int main()
-{
-    FILE *sal,*Examenin;
-    char Linea[250];
-    char s[2]= ",";
-    char *token;
-    char nombre[50],apellido[50];
-    int cuenta,x;
-
-        sal =fopen("Examen.txt","w");
-			/*
-            printf("Copia: %s\n",nuevo->pregunta);
-            fprintf(sal ," %s\n",nuevo->pregunta );
-            printf("Copia: %s\n",nuevo->incisoA);
-            fprintf(sal ," %s\n",nuevo->incisoA );
-            printf("Copia: %s\n",nuevo->incisoB);
-            fprintf(sal ," %s\n",nuevo->incisoB );
-            printf("Copia: %s\n",nuevo->incisoC);
-            fprintf(sal ," %s\n",nuevo->incisoC );
-            printf("Copia: %s\n",nuevo->incisoD);
-            fprintf(sal ," %s\n",nuevo->incisoD );
-            printf("Copia: %d\n",nuevo->puntos);
-            fprintf(sal ," %d\n",nuevo->puntos );
- 			*/
-   		fclose(sal);
-   
-    
-    printf("ingresa nombre,apellido y numero de cuenta\n");
-    scanf("%s %s %d",nombre,apellido,&cuenta);
-    printf("Nombre: %s\nApellido: %s\nCuenta: %d\n",nombre,apellido,cuenta);
-    Busca_Alumno(nombre,apellido,cuenta);
-    
-    return 0;
+	system("clear");
+	do{
+		printf("\n\tBienvenido.\n");
+		printf("\tQue deseas, aplicar o hacer un examen?\n");
+		printf("\tPresiona una opcion para continuar.\n");
+		printf("\t\t1- Crear un examen\n");
+		printf("\t\t2- Aplicar un examen.\n");
+		printf("\t\ts- Salir del programa.\n");
+		printf("\t\tOpcion: ");	
+	        scanf("%c", & opcion);
+		getchar();
+		switch(opcion)
+		{
+			case '1': creadorExamenes();
+				break;
+			case '2':aplicadorExamenes();
+        			calificadorExamenes();		
+				break;
+			case 's':break;
+			default: system("clear");
+				printf("Opcion no valida.\n");	
+		}
+	}while(opcion!='s'&&opcion!='S');
 }
 
 
-int Leer()
-{
-	char pregunta[200];
-    char incisoA[50];
-    char incisoB[50];
-    char incisoC[50];
-    char incisoD[50];
-    int puntos,npreg;
-	FILE *in;
-	
+/*
+*	@Brief/resumen		La función permite generar un examen basado en las 
+*						características que le dé el usuario.
+*						Es importante mencionar que cada pregunta e inciso llevará un 
+*						formato especial para su lectura en el siguiente 
+*						segmento.
+*
+*	@Author/autor		Bruno Valerio Fernández, Abdín Alejandro Alcazar Terán, Benjamín Menchaca Reyna
+*	
+*	@Return 				void
+*/
+void creadorExamenes(void){
 
-	printf("Cuantas preguntas quieres? \n");
-	scanf("%d",&npreg);
-	
-	Preguntas *lista=malloc(npreg);
-	
-	in = fopen("Banco.csv", "r");
+	FILE *archivoReactivos;
+	FILE *archivoExamen;
 
-	
+	char nombreArchivo[30];
+	char nombreExamen[40]={"Examen_"};
+	char lineaArchivo[300];
 
- 	fclose(in);
-	
+	int i;
+	int numeroPreguntas;
+	int contador_1=0;
+
+
+	printf("\n-creadorExamenes-\n");
+
+	printf("\nNombre del archivo de reactivos que desea subir: ");
+	fgets(nombreArchivo,30,stdin);
+
+	for(i=0;i<=30;i++){
+
+		if(nombreArchivo[i]=='\n') nombreArchivo[i]='\0';
+	}
+
+	archivoReactivos=fopen(nombreArchivo,"rt");
+	if(archivoReactivos==NULL){printf("no existe el archivo\n"); exit(1);}
+
+	do{
+		system("clear");
+		printf("Número de preguntas que desea colocar en el examen: ");
+		scanf("%d",&numeroPreguntas);
+		getchar();
+	}
+	while(numeroPreguntas<5);
+
+	strcat(nombreExamen,nombreArchivo);
+
+	archivoExamen=fopen(nombreExamen,"wt");
+
+	while((fgets(lineaArchivo,300,archivoReactivos)!=NULL)&&(contador_1<numeroPreguntas)){
+
+		fprintf(archivoExamen,"%d|",contador_1+1);
+		fputs(lineaArchivo,archivoExamen);
+
+		contador_1++;
+	}
+
+	if(contador_1<5) exit(1);
+
+	printf("\nFue creado el examen (%s) con (%d) preguntas\n",nombreExamen,numeroPreguntas);
+
+	fclose(archivoReactivos);
+	fclose(archivoExamen);
 }
-
-int Busca_Alumno(char nombre[50] ,char apellido[50] ,int cuenta)
-{
-    FILE *Base;
-    int x=1;
-    char s[2]= ",";
-    char *token;
-    char Line[250];
-    char Datos[225];
-    
-	Base = fopen("Alumnos.txt","r");
-    if (Base==NULL)
-	{
-		printf("El archivo no existe.\n");
-		exit(1);
-    }
-    while(fgets(Line,sizeof(Line),Base) !=NULL)
-    {
-        token = strtok(Line, s);
-        
-        while( token != NULL)
-            
-        {
-            printf("\n" );
-            x=strcmp(nombre,token);
-            
-            if(x==0)
-            {
-                 printf("El alumno esta en la lista\n");
-                
-                return x;
-            }            
-             token = strtok(NULL, s);     
-        }
-        printf("El Alumno no esta en la lista\n");
-        return x;
-    }
-    
-     fclose(Base);
-     return x;
-}
-
 
 /*
 *	@Brief/resumen		La función permite hacer una recopilación de todas las 			
@@ -157,7 +152,7 @@ void aplicadorExamenes(void){
 
 	char lineaImprimir[100];
 
-
+	printf("\tIngresa el nombre del archivo examen.\n");
 	bancoAlumnos=fopen("bancoAlumnos.txt","rt");
 	if(bancoAlumnos==NULL){printf("no existe el archivo\n"); exit(1);}
 
@@ -213,6 +208,39 @@ void aplicadorExamenes(void){
 	fclose(archivoAlumno);
 }
 
+/*
+*	@Brief/resumen		La función permite recibir la información del aplicador de 
+*						exámenes, y evalúa las respuestas correctas del alumno y envía 
+*						la calificación a un archivo en el cual se tendrá la base de 
+*						datos genera.
+*			
+*	@Author/autor		Bruno Valerio Fernández, Abdín Alejandro Alcazar Terán, Benjamín Menchaca Reyna
+*	
+*	@Return 				void
+*/
+void calificadorExamenes(void){
+
+	FILE *archivoAlumno;
+
+	char lineaAlumno[50];
+	char datosAlumno[30];
+	int calificacion;
+
+	archivoAlumno=fopen("archivoAlumno.txt","rt");
+	if(archivoAlumno==NULL){printf("no existe el archivo\n"); exit(1);}
+
+
+	fgets(lineaAlumno,50,archivoAlumno);
+
+	sscanf(lineaAlumno,"%d %s",&calificacion,datosAlumno);
+
+	printf("\n-calificadorExamenes-\n");
+
+	printf("La calificación de %s es de %d \n\n",datosAlumno,calificacion);
+
+	fclose(archivoAlumno);
+}
+
 void funcionRand(){
 
 #include<stdio.h>
@@ -249,11 +277,7 @@ int main(){
  
     return 0;
 }
-
-
 }
 
 
 
-//new test
-//mensaje para benja
