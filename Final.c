@@ -46,7 +46,6 @@ int main(void)
 	}while(opcion!='s'&&opcion!='S');
 }
 
-
 /*
 *	@Brief/resumen		La función permite generar un examen basado en las 
 *						características que le dé el usuario.
@@ -72,7 +71,7 @@ void creadorExamenes(void){
 	int contador_1=0;
 
 
-	printf("\n-creadorExamenes-\n");
+	printf("\n-CreadorExamenes-\n");
 
 	printf("\nNombre del archivo de reactivos que desea subir: ");
 	fgets(nombreArchivo,30,stdin);
@@ -94,21 +93,19 @@ void creadorExamenes(void){
 	while(numeroPreguntas<5);
 
 	strcat(nombreExamen,nombreArchivo);
-
 	archivoExamen=fopen(nombreExamen,"wt");
 
-	while((fgets(lineaArchivo,300,archivoReactivos)!=NULL)&&(contador_1<numeroPreguntas)){
+	while((fgets(lineaArchivo,300,archivoReactivos)!=NULL)&&(contador_1<numeroPreguntas))
+	{
 
 		fprintf(archivoExamen,"%d|",contador_1+1);
 		fputs(lineaArchivo,archivoExamen);
-
 		contador_1++;
 	}
 
 	if(contador_1<5) exit(1);
 
 	printf("\nFue creado el examen (%s) con (%d) preguntas\n",nombreExamen,numeroPreguntas);
-
 	fclose(archivoReactivos);
 	fclose(archivoExamen);
 }
@@ -125,8 +122,8 @@ void creadorExamenes(void){
 *	
 *	@Return 				void
 */
-void aplicadorExamenes(void){
-
+void aplicadorExamenes(void)
+{
 	FILE *bancoAlumnos;
 	FILE *archivoExamen;
 	FILE *archivoAlumno;
@@ -152,56 +149,55 @@ void aplicadorExamenes(void){
 
 	char lineaImprimir[100];
 
-	printf("\tIngresa el nombre del archivo examen.\n");
+	
 	bancoAlumnos=fopen("bancoAlumnos.txt","rt");
 	if(bancoAlumnos==NULL){printf("no existe el archivo\n"); exit(1);}
 
-	archivoAlumno=fopen("archivoAlumno.txt","wt");
+	if(archivoAlumno=fopen("archivoAlumno.txt","wt")==NULL)
+		printf("No existe e")
+
+printf("\tIngresa el nombre del archivo examen.\n");
 
 
-	printf("\n-aplicadorExamenes-\n");
+	printf("\n-AplicadorExamenes-\n");
 
 	printf("\nIngrese el nombre del examen: ");
-	fgets(nombreExamen,30,stdin);
+	scanf("%s", nombreExamen);
+	getchar();
 
-	for(i=0;i<=30;i++) if(nombreExamen[i]=='\n') nombreExamen[i]='\0';
+	strcat(nombreExamen,'\0');
 
-	puts(nombreExamen);
-
-	archivoExamen=fopen(nombreExamen,"rt");
-	if(archivoExamen==NULL){printf("no existe el archivo\n"); exit(1);}
+	if((archivoExamen=fopen(nombreExamen,"rt"))==NULL)
+	{
+		printf("\tNo existe el archivo.\n"); 
+		exit(1);
+	}
 
 	printf("\nIngrese su número de cuenta: ");
 	scanf("%s",numeroCuenta);
 	getchar();
 
-	while(fgets(lineaAlumnos,300,bancoAlumnos)!=NULL){
-
-		sscanf(lineaAlumnos,"%[^|]|%s",cuentaAlumno,nombreAlumno);
-
-		if(strstr(lineaAlumnos,numeroCuenta)!=NULL){
-
+	while(fgets(lineaAlumnos,300,bancoAlumnos)!=NULL)
+	{
+		sscanf(lineaAlumnos,"%[^,],%s",cuentaAlumno,nombreAlumno);
+		if(strstr(lineaAlumnos,numeroCuenta)!=NULL)
+		{
 			printf("Usuario: %s \n",nombreAlumno);
-
 			strcpy(lineaImprimir,nombreAlumno);
 			strcat(lineaImprimir,numeroCuenta);
 //IDENTIFICADOR DEL EXAMEN|CUENTA|CALIFICACIÓN|TIEMPO|RESPUESTAS|CORRECTAS(#)|PREGUNTAS(#)|TIEMPO TOTAL| MÁXIMO DE PUNTOS QUE SE PUEDE TENER
 		}
 	}
 
-
-	while(fgets(lineaArchivo,300,archivoExamen)!=NULL){
-
-			sscanf(lineaArchivo,"%d|%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%c|%d",&numeroPregunta,pregunta,incisoA,incisoB,incisoC,incisoD,&respuesta_correcta,&valor);
-
-			contador_1++;
+	while(fgets(lineaArchivo,300,archivoExamen)!=NULL)
+	{
+		sscanf(lineaArchivo,"%d%[^,],%[^,]|%[^,],%[^,],%[^,],%c|%d",&numeroPregunta,pregunta,incisoA,incisoB,incisoC,incisoD,&respuesta_correcta,&valor);
+		contador_1++;
 	}
 
 		//for(i=0;i<=100;i++) if(lineaImprimir[i]=='\n') lineaImprimir[i]='\t';
-
 		//fprintf(archivoAlumno,"%d ",(resultado*10)/contador_1);
 		//fputs(lineaImprimir,archivoAlumno);//IDENTIFICADOR DEL EXAMEN|CUENTA|CALIFICACIÓN|TIEMPO|RESPUESTAS|CORRECTAS(#)|PREGUNTAS(#)|TIEMPO TOTAL| MÁXIMO DE PUNTOS QUE SE PUEDE TENER
-
 
 	fclose(bancoAlumnos);
 	fclose(archivoExamen);
@@ -218,29 +214,26 @@ void aplicadorExamenes(void){
 *	
 *	@Return 				void
 */
-void calificadorExamenes(void){
-
+void calificadorExamenes(void)
+{
 	FILE *archivoAlumno;
-
 	char lineaAlumno[50];
 	char datosAlumno[30];
 	int calificacion;
-
 	archivoAlumno=fopen("archivoAlumno.txt","rt");
-	if(archivoAlumno==NULL){printf("no existe el archivo\n"); exit(1);}
-
+	if(archivoAlumno==NULL)
+	{
+		printf("no existe el archivo\n");
+		exit(1);
+	}
 
 	fgets(lineaAlumno,50,archivoAlumno);
-
 	sscanf(lineaAlumno,"%d %s",&calificacion,datosAlumno);
-
-	printf("\n-calificadorExamenes-\n");
-
+	printf("\n-Calificador Examenes-\n");
 	printf("La calificación de %s es de %d \n\n",datosAlumno,calificacion);
-
 	fclose(archivoAlumno);
 }
-
+/*
 void funcionRand(){
 
 #include<stdio.h>
@@ -278,6 +271,6 @@ int main(){
     return 0;
 }
 }
-
+*/
 
 
