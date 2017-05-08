@@ -62,8 +62,7 @@ int main(void)
                            }
               }while(opcion!='s' && opcion!='S');
 }
- 
- 
+
 /*
 *           @Brief/resumen                       La función permite generar un examen basado en las
 *                                                                              características que le dé el usuario.
@@ -74,7 +73,6 @@ int main(void)
 *           @Return                                                  void
 */
 void creadorExamenes(void){
- 
               FILE *fp_in;
               FILE *fp_out;
  
@@ -273,94 +271,113 @@ int RVALUE(int numlin)
               }
               return *rvalue;
 }
-             
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
+	FILE *bancoAlumnos;
+	FILE *archivoExamen;
+	FILE *archivoAlumno;
+
+	char lineaAlumnos[300];
+	char numeroCuenta[20];
+
+	char nombreAlumno[100];
+	char cuentaAlumno[20];
+
+	char nombreExamen[30];
+
+	char lineaArchivo[300];
+	char pregunta[200];	
+	char incisoA[100], incisoB[100],  incisoC[100],  incisoD[100];
+	char respuesta_correcta, respuesta;
+	int valor;
+	int numeroPregunta;
+
+	int contador_1=0;
+	int resultado=0;
+	int i;
+
+	char lineaImprimir[100];
+
+	
+	bancoAlumnos=fopen("bancoAlumnos.txt","rt");
+	if(bancoAlumnos==NULL){printf("no existe el archivo\n"); exit(1);}
+
+	if(archivoAlumno=fopen("archivoAlumno.txt","wt")==NULL)
+		printf("No existe e")
+
+printf("\tIngresa el nombre del archivo examen.\n");
+
+
+	printf("\n-AplicadorExamenes-\n");
+
+	printf("\nIngrese el nombre del examen: ");
+	scanf("%s", nombreExamen);
+	getchar();
+
+	strcat(nombreExamen,'\0');
+
+	if((archivoExamen=fopen(nombreExamen,"rt"))==NULL)
+	{
+		printf("\tNo existe el archivo.\n"); 
+		exit(1);
+	}
+
+	printf("\nIngrese su número de cuenta: ");
+	scanf("%s",numeroCuenta);
+	getchar();
+
+	while(fgets(lineaAlumnos,300,bancoAlumnos)!=NULL)
+	{
+		sscanf(lineaAlumnos,"%[^,],%s",cuentaAlumno,nombreAlumno);
+		if(strstr(lineaAlumnos,numeroCuenta)!=NULL)
+		{
+			printf("Usuario: %s \n",nombreAlumno);
+			strcpy(lineaImprimir,nombreAlumno);
+			strcat(lineaImprimir,numeroCuenta);
+//IDENTIFICADOR DEL EXAMEN|CUENTA|CALIFICACIÓN|TIEMPO|RESPUESTAS|CORRECTAS(#)|PREGUNTAS(#)|TIEMPO TOTAL| MÁXIMO DE PUNTOS QUE SE PUEDE TENER
+		}
+	}
+
+	while(fgets(lineaArchivo,300,archivoExamen)!=NULL)
+	{
+		sscanf(lineaArchivo,"%d%[^,],%[^,]|%[^,],%[^,],%[^,],%c|%d",&numeroPregunta,pregunta,incisoA,incisoB,incisoC,incisoD,&respuesta_correcta,&valor);
+		contador_1++;
+	}
+
+		//for(i=0;i<=100;i++) if(lineaImprimir[i]=='\n') lineaImprimir[i]='\t';
+		//fprintf(archivoAlumno,"%d ",(resultado*10)/contador_1);
+		//fputs(lineaImprimir,archivoAlumno);//IDENTIFICADOR DEL EXAMEN|CUENTA|CALIFICACIÓN|TIEMPO|RESPUESTAS|CORRECTAS(#)|PREGUNTAS(#)|TIEMPO TOTAL| MÁXIMO DE PUNTOS QUE SE PUEDE TENER
+
+	fclose(bancoAlumnos);
+	fclose(archivoExamen);
+	fclose(archivoAlumno);
+}
+
 /*
-*           @Brief/resumen                       La función permite recibir la información del aplicador de
-*                                                                              exámenes, y evalúa las respuestas correctas del alumno y envía
-*                                                                              la calificación a un archivo en el cual se tendrá la base de
-*                                                                              datos genera.                           
-*           @Author/autor                         Bruno Valerio Fernández, Abdín Alejandro Alcazar Terán, Benjamín Menchaca Reyna
-*           @Return                                                  void
+*	@Brief/resumen		La función permite recibir la información del aplicador de 
+*						exámenes, y evalúa las respuestas correctas del alumno y envía 
+*						la calificación a un archivo en el cual se tendrá la base de 
+*						datos genera.
+*			
+*	@Author/autor		Bruno Valerio Fernández, Abdín Alejandro Alcazar Terán, Benjamín Menchaca Reyna
+*	
+*	@Return 				void
 */
 void calificadorExamenes(void)
 {
-              FILE *archivo;
- 
-              char lineaArchivo[300];
-              char nombreExamen_1[100],numeroCuenta[10];
-              char extra1[10],extra2[10],extra3[10];
-              int numeroLineas1,numeroLineas2,valorNeto;
- 
- 
-              archivo=fopen("informeAlumno.txt","rt");
-              fgets(lineaArchivo,300,archivo);
-              sscanf(lineaArchivo,"%[^,],%[^,],%d|%[^,],%d,%d|%[^,],%[^,]",nombreExamen_1,numeroCuenta,&numeroLineas1,extra1,&numeroLineas2,&valorNeto,extra2,extra3);
-              printf("\nLa calificación de (%s) es de (%d)\n\n",numeroCuenta,numeroLineas1);
-              fclose(archivo);
+	FILE *archivoAlumno;
+	char lineaAlumno[50];
+	char datosAlumno[30];
+	int calificacion;
+	archivoAlumno=fopen("archivoAlumno.txt","rt");
+	if(archivoAlumno==NULL)
+	{
+		printf("no existe el archivo\n");
+		exit(1);
+	}
+
+	fgets(lineaAlumno,50,archivoAlumno);
+	sscanf(lineaAlumno,"%d %s",&calificacion,datosAlumno);
+	printf("\n-Calificador Examenes-\n");
+	printf("La calificación de %s es de %d \n\n",datosAlumno,calificacion);
+	fclose(archivoAlumno);
 }
- 
- 
-/*
-*           @Brief/resumen                       La función permite generar un archivo para leer las líneas.
-*           @Author/autor                         Bruno Valerio Fernández, Abdín Alejandro Alcazar Terán, Benjamín Menchaca Reyna
-*           @Return                                                  contador_1: es el contador de líneas por archivo.
-*/
-int archivoLineas(char *nombreArchivo)
-{
- 
-              FILE *Bancopreg;
-              int contador_1=0;
-              char lineaArchivo[200];
- 
-              Bancopreg=fopen(nombreArchivo,"rt");
-              while((fgets(lineaArchivo,200,Bancopreg))!=NULL)
-              {
-                           contador_1++;            
-              }
- 
-              if(contador_1<5)
-              {
-                           printf("\n\tEs recomendable tener un minimo de 5 preguntas escritas en el banco de preguntas.\n\tAgregar mas preguntas o utilizar otro archivo para continuar.\n");
-                           exit(1);
-              }
-              fclose(Bancopreg);
-              return contador_1;
-}
- 
-//intercambiar preguntas
-//intercambiar respuestas
-//agregar tiempo de examen.
-//domigo 17:29
