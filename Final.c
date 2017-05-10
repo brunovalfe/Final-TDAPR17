@@ -200,7 +200,7 @@ void aplicadorExamenes(void)
 	}
 
 	
-tshoot:	printf("\tIngrese el nombre del examen: ");
+	printf("\tIngrese el nombre del examen: ");
 	scanf("%s", nombreExamen_1);
 	getchar();
 	strcat(nombreExamen_1,"\0");
@@ -219,13 +219,12 @@ tshoot:	printf("\tIngrese el nombre del examen: ");
 
 //printf("%d, %s, %s, %s, %s, %s, %d\n",qlist[cont].qnum, qlist[cont].q, qlist[cont].cans.ans,qlist[cont].b.ans,qlist[cont].c.ans,qlist[cont].d.ans,qlist[cont].pts);
 	}
-
 	//rvalue= malloc(numeroLineas*sizeof(int));
 	int rvalue[numeroLineas];
 	RVALUE(numeroLineas, rvalue);
 
 	system("clear");
-	printf("\tEXAMEN:\n\n");
+	printf("\tEXAMEN:\n");
 
 	gettimeofday(&inicio, NULL);
 
@@ -265,24 +264,25 @@ tshoot:	printf("\tIngrese el nombre del examen: ");
 	
 	gettimeofday(&final, NULL);
 	segundos = (double)(final.tv_usec - inicio.tv_usec) / 1000000 + (double)(final.tv_sec - inicio.tv_sec);
-	milis = segundos * 1000;
-	printf("\n\nTotal: %d\ttotalpuntos: %d\ntiempo: %8.6f milisegundos\n", score, totscore, milis);
-printf("//////////////////////\n");
-getchar();
-	
-goto tshoot;
-exit(1);
+	printf("\n\nTotal: %d\ttotalpuntos: %d\ntiempo: %f segundos\n", score, totscore,segundos);
 
-	
 
 	fp_out=fopen("informeAlumno.txt","a+");
 	while(fgets(lineaAlumnos,100,fpin)!=NULL)
 	{
-		fprintf(fp_out,"%s,%s,%d,TIEMPO,%d,%d,TIEMPO MAX,MAXPT",nombreExamen_1,numeroCuenta,(valorNeto*10)/numeroLineas,numeroLineas,valorNeto);
-		printf("\n\n");
-		
-		fclose(fp_out);
+		sscanf(lineaAlumnos,"%[^,],%[^\n],\n",cuentaAlumno,nombreAlumno);		
+		if((strcmp(cuentaAlumno,numeroCuenta))==0)
+		{	
+			printf("El examen no es valido, ya hay un resultado previo.\n");
+			exit(1);
+		}
 	}
+	
+	fprintf(fp_out,"Matricula: %s,Nombre: %s,Examen: %s,Calificacion: %d, PuntosTotales: %d, PuntoObtenidos: %d, Tiempo: %f",cuentaAlumno,nombreAlumno, nombreExamen_1, (score/totscore*10),totscore, score, segundos); 
+	printf("\n\n");
+	
+	fclose(fpin);
+	fclose(fp_out);
 }
 
 
@@ -320,7 +320,7 @@ void RVALUE(int numlin, int rvalue[])//Igual que la funcion RVALANS; pero cambia
 			}
 		}while(key==0);
 		rvalue[cont]=x;
-		printf("%d  ",rvalue[cont]);	
+		//printf("%d  ",rvalue[cont]);	
 	}
 	return;
 }
@@ -393,24 +393,7 @@ void RVALANS(int numlin, int rvalans[])//Igual que la funvion RVALUE: pero cambi
 *	@Author/autor		Bruno Valerio Fernández, Abdín Alejandro Alcazar Terán, Benjamín Menchaca Reyna
 *	@Return 				void
 */
-void calificadorExamenes(void)
-{
-	FILE *archivo;
 
-	char lineaArchivo[300];
-	char nombreExamen_1[100],numeroCuenta[10];
-	char extra1[10],extra2[10],extra3[10];
-	int numeroLineas1,numeroLineas2,valorNeto;
-
-	archivo=fopen("informeAlumno.txt","rt");
-	fgets(lineaArchivo,300,archivo);
-	sscanf(lineaArchivo,"%[^,],%[^,],%d|%[^,],%d,%d|%[^,],%[^,]",nombreExamen_1,numeroCuenta,&numeroLineas1,extra1,&numeroLineas2,&valorNeto,extra2,extra3);
-	printf("\nLa calificación de (%s) es de (%d)\n\n",numeroCuenta,numeroLineas1);
-	fclose(archivo);
-}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
 *	@Brief/resumen		La función permite generar un archivo para leer las líneas.
 *	@Author/autor		Bruno Valerio Fernández, Abdín Alejandro Alcazar Terán, Benjamín Menchaca Reyna
