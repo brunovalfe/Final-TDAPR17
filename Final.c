@@ -149,11 +149,11 @@ void creadorExamenes(void){
 */
 void aplicadorExamenes(void)
 {
-	int *rvalue, *rvalans;	
+	int rvalans[4];	
 	int cont, cont2, score=0, totscore=0, key=0;;
 	char r;
 	
-	FILE *fp_in, *fp_out, *sbank;
+	FILE *fpin, *fp_out, *sbank;
 
 	int idPregunta;
 	char nombreExamen_1[30];
@@ -200,28 +200,28 @@ void aplicadorExamenes(void)
 	}
 
 	
-	printf("\tIngrese el nombre del examen: ");
+tshoot:	printf("\tIngrese el nombre del examen: ");
 	scanf("%s", nombreExamen_1);
 	getchar();
 	strcat(nombreExamen_1,"\0");
 
-	if((fp_in=fopen(nombreExamen_1,"rt"))==NULL)
+	if((fpin=fopen(nombreExamen_1,"rt"))==NULL)
 	{
 		printf("\tEl examen '%s' no se encontro.\n\n\tIntentar con un examen existente para continuar.\n\n", nombreExamen_1);
 		exit(1);
 	}
 
 	numeroLineas=archivoLineas(nombreExamen_1);
-	quinfo *qlist=malloc(numeroLineas);
+	quinfo qlist[numeroLineas];//quinfo *qlist=malloc(numeroLineas);
 	for(cont=0;cont<numeroLineas;cont++)
 	{
-		fscanf(fp_in,"%d,%[^,],%[^,],%[^,],%[^,],%[^,],%d", &qlist[cont].qnum, qlist[cont].q, qlist[cont].cans.ans, qlist[cont].b.ans, qlist[cont].c.ans, qlist[cont].d.ans, &qlist[cont].pts);
+		fscanf(fpin,"%d,%[^,],%[^,],%[^,],%[^,],%[^,],%d", &qlist[cont].qnum, qlist[cont].q, qlist[cont].cans.ans, qlist[cont].b.ans, qlist[cont].c.ans, qlist[cont].d.ans, &qlist[cont].pts);
 
 //printf("%d, %s, %s, %s, %s, %s, %d\n",qlist[cont].qnum, qlist[cont].q, qlist[cont].cans.ans,qlist[cont].b.ans,qlist[cont].c.ans,qlist[cont].d.ans,qlist[cont].pts);
 	}
 
-	rvalue= malloc(numeroLineas*sizeof(int));
-	rvalans=malloc(4*sizeof(int));
+	//rvalue= malloc(numeroLineas*sizeof(int));
+	int rvalue[numeroLineas];
 	RVALUE(numeroLineas, rvalue);
 
 	system("clear");
@@ -262,22 +262,25 @@ void aplicadorExamenes(void)
 			score+= qlist[rvalue[cont]].pts;
 		totscore+= qlist[rvalue[cont]].pts;
 	}
+	
 	gettimeofday(&final, NULL);
 	segundos = (double)(final.tv_usec - inicio.tv_usec) / 1000000 + (double)(final.tv_sec - inicio.tv_sec);
 	milis = segundos * 1000;
 	printf("\n\nTotal: %d\ttotalpuntos: %d\ntiempo: %8.6f milisegundos\n", score, totscore, milis);
-printf("BORDER LINE//////////////////////\n");
+printf("//////////////////////\n");
 getchar();
+	
+goto tshoot;
 exit(1);
 
 	
 
 	fp_out=fopen("informeAlumno.txt","a+");
-	while(fgets(lineaAlumnos,100,fp_in)!=NULL)
+	while(fgets(lineaAlumnos,100,fpin)!=NULL)
 	{
 		fprintf(fp_out,"%s,%s,%d,TIEMPO,%d,%d,TIEMPO MAX,MAXPT",nombreExamen_1,numeroCuenta,(valorNeto*10)/numeroLineas,numeroLineas,valorNeto);
 		printf("\n\n");
-		fclose(fp_in);
+		
 		fclose(fp_out);
 	}
 }
@@ -306,7 +309,7 @@ void RVALUE(int numlin, int rvalue[])//Igual que la funcion RVALANS; pero cambia
 		key=0;		
 		do
 		{
-			x=rand()%numlin+1;
+			x=rand()%numlin;
 			for(aux=0;aux<=cont;aux++)
 			{
 				if(aux==cont)
