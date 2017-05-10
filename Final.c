@@ -153,13 +153,14 @@ void aplicadorExamenes(void)
 	int cont, cont2, score=0, totscore=0, key=0;;
 	char r;
 	
-	FILE *fpin, *fp_out, *sbank;
+	FILE *fpin, *fp_out, *sbank, *Salida;
 
 	int idPregunta;
 	char nombreExamen_1[30];
 	char numeroCuenta[10];
 	char lineaAlumnos[100];
 	char cuentaAlumno[10],nombreAlumno[30];
+	char nombreArchivoSalida[30];
 //IDENTIFICADOR DEL EXAMEN|CUENTA|CALIFICACIÓN|TIEMPO|RESPUESTAS|CORRECTAS(#)|PREGUNTAS(#)|TIEMPO TOTAL| MÁXIMO DE PUNTOS QUE SE PUEDE TENER
 
 	int valorNeto=0;
@@ -167,7 +168,6 @@ void aplicadorExamenes(void)
 
 	double segundos = 0, milis=0;
 	struct timeval final, inicio;
-
  	srand(time(0));
 	printf("\n\t[Aplicador de Examenes]\n");
 	if((sbank=fopen("bancoAlumnos.csv","rt"))==NULL)
@@ -204,7 +204,11 @@ tshoot:	printf("\tIngrese el nombre del examen: ");
 	scanf("%s", nombreExamen_1);
 	getchar();
 	strcat(nombreExamen_1,"\0");
-
+	strcpy(nombreArchivoSalida,nombreExamen_1);
+	strcat(nombreArchivoSalida,"_");
+	strcat(nombreArchivoSalida,numeroCuenta);///////////////////
+	Salida = fopen(nombreArchivoSalida,"wt");////////////////
+	printf("nombre Archivo de Salida: %s\n",nombreArchivoSalida);
 	if((fpin=fopen(nombreExamen_1,"rt"))==NULL)
 	{
 		printf("\tEl examen '%s' no se encontro.\n\n\tIntentar con un examen existente para continuar.\n\n", nombreExamen_1);
@@ -233,30 +237,38 @@ tshoot:	printf("\tIngrese el nombre del examen: ");
 	{
 //printf("%d\n",cont);
 		RVALANS(4, rvalans);
+		fprintf(Salida,"\nPregunta %d:\t\tValor:%d\n",cont+1,qlist[rvalue[cont]].pts);
 		printf("\nPregunta %d:\t\tValor:%d\n",cont+1,qlist[rvalue[cont]].pts);
+		fprintf(Salida,"%s\n",qlist[rvalue[cont]].q);
 		printf("%s\n",qlist[rvalue[cont]].q);
 		for(cont2=0;cont2<4;cont2++)
 		{
 			if(rvalans[cont2]==1){
 				qlist[rvalue[cont]].cans.l=CSORT(cont2);
-				printf("%c) %s\n", qlist[rvalue[cont]].cans.l,qlist[rvalue[cont]].cans.ans);	
+				printf("%c) %s\n", qlist[rvalue[cont]].cans.l,qlist[rvalue[cont]].cans.ans);
+				fprintf(Salida,"%c) %s\n", qlist[rvalue[cont]].cans.l,qlist[rvalue[cont]].cans.ans);	
 			}
 			if(rvalans[cont2]==2){
 				qlist[rvalue[cont]].b.l=CSORT(cont2);
-				printf("%c) %s\n", qlist[rvalue[cont]].b.l,qlist[rvalue[cont]].b.ans);	
+				printf("%c) %s\n", qlist[rvalue[cont]].b.l,qlist[rvalue[cont]].b.ans);
+				fprintf(Salida,"%c) %s\n", qlist[rvalue[cont]].b.l,qlist[rvalue[cont]].b.ans);	
 			}
 			if(rvalans[cont2]==3){
 				qlist[rvalue[cont]].c.l=CSORT(cont2);
 				printf("%c) %s\n", qlist[rvalue[cont]].c.l,qlist[rvalue[cont]].c.ans);	
+				fprintf(Salida,"%c) %s\n", qlist[rvalue[cont]].c.l,qlist[rvalue[cont]].c.ans);
 			}
 			if(rvalans[cont2]==4){
 				qlist[rvalue[cont]].d.l=CSORT(cont2);
-				printf("%c) %s\n", qlist[rvalue[cont]].d.l,qlist[rvalue[cont]].d.ans);	
+				printf("%c) %s\n", qlist[rvalue[cont]].d.l,qlist[rvalue[cont]].d.ans);
+				fprintf(Salida,"%c) %s\n", qlist[rvalue[cont]].d.l,qlist[rvalue[cont]].d.ans);	
 			}
 
 		}
 		printf("Ingresa el inciso de la respuesta correcta: ");
+		
 		scanf("%c", &r);
+		fprintf(Salida,"Respuesta ingresada: %c",r);
 		getchar();
 		if(r == qlist[rvalue[cont]].cans.l)
 			score+= qlist[rvalue[cont]].pts;
@@ -267,7 +279,9 @@ tshoot:	printf("\tIngrese el nombre del examen: ");
 	segundos = (double)(final.tv_usec - inicio.tv_usec) / 1000000 + (double)(final.tv_sec - inicio.tv_sec);
 	milis = segundos * 1000;
 	printf("\n\nTotal: %d\ttotalpuntos: %d\ntiempo: %8.6f milisegundos\n", score, totscore, milis);
+	fprintf(Salida,"\n\nTotal: %d\ttotalpuntos: %d\ntiempo: %8.6f milisegundos\n", score, totscore, milis);
 printf("//////////////////////\n");
+fprintf(Salida,"//////////////////////\n");
 getchar();
 	
 goto tshoot;
