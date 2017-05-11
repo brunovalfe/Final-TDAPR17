@@ -43,8 +43,8 @@ int main(void)
 {
 	char opcion;	
 
-	system("clear");
 	do{
+		system("clear");
 		printf("\n\tBienvenido.\n");
 		printf("\tQue deseas, aplicar o hacer un examen?\n");
 		printf("\tPresiona una opcion para continuar.\n");
@@ -58,8 +58,7 @@ int main(void)
 		{
 			case '1': creadorExamenes();
 				break;
-			case '2':aplicadorExamenes();
-        			calificadorExamenes();		
+			case '2':aplicadorExamenes();	
 				break;
 			case 's':break;
 			default: system("clear");
@@ -158,7 +157,7 @@ void aplicadorExamenes(void)
 	int idPregunta;
 	char nombreExamen_1[30];
 	char numeroCuenta[10];
-	char lineaAlumnos[100];
+	char lineaAlumnos[100], buff[150];
 	char cuentaAlumno[10],nombreAlumno[30];
 //IDENTIFICADOR DEL EXAMEN|CUENTA|CALIFICACIÓN|TIEMPO|RESPUESTAS|CORRECTAS(#)|PREGUNTAS(#)|TIEMPO TOTAL| MÁXIMO DE PUNTOS QUE SE PUEDE TENER
 
@@ -180,14 +179,18 @@ void aplicadorExamenes(void)
 	printf("\tIngrese su número de cuenta: ");
 	scanf("%s",numeroCuenta);
 	getchar();
+
 	while((fgets(lineaAlumnos,100,sbank))!=NULL)
 //	while(fscanf(sbank,"%[^,],%[^,],\n",cuentaAlumno,nombreAlumno)>=0)//Forma alternativa de lectura de campos del archivo. Si recibe los campos pero no entra en la condicion 'if((strcmp...)
 	{
-/**/		sscanf(lineaAlumnos,"%[^,],%[^,],\n",cuentaAlumno,nombreAlumno);
-//puts(cuentaAlumno);
-//puts(nombreAlumno);
+
+/**/		sscanf(lineaAlumnos,"%[^,],%[^,],",cuentaAlumno,nombreAlumno);
 		if((strcmp(numeroCuenta,cuentaAlumno))==0)
 		{
+
+			for(cont=0;cont<30;cont++) 
+				if(nombreAlumno[cont]=='\n') 
+					nombreAlumno[cont]='\0';	
 			printf("\tUsuario: %s\n",nombreAlumno);
 			key=1;
 			break;
@@ -267,18 +270,22 @@ void aplicadorExamenes(void)
 	printf("\n\nTotal: %d\ttotalpuntos: %d\ntiempo: %f segundos\n", score, totscore,segundos);
 
 
-	fp_out=fopen("informeAlumno.txt","a+");
-	while(fgets(lineaAlumnos,100,fpin)!=NULL)
+	if((fp_out=fopen("informeAlumno.txt","rt"))!=NULL)
 	{
-		sscanf(lineaAlumnos,"%[^,],%[^\n],\n",cuentaAlumno,nombreAlumno);		
-		if((strcmp(cuentaAlumno,numeroCuenta))==0)
-		{	
-			printf("El examen no es valido, ya hay un resultado previo.\n");
-			exit(1);
+		while(fgets(lineaAlumnos,100,fpin)!=NULL)
+		{
+			sscanf(lineaAlumnos,"%[^,],%[^\n],\n",cuentaAlumno, buff);		
+			if((strcmp(cuentaAlumno,numeroCuenta))==0)
+			{	
+				printf("El examen no es valido, ya hay un resultado previo.\n");
+				exit(1);
+			}
 		}
+		fclose(fp_out);
 	}
+	fp_out=fopen("informeAlumno.txt","a");
 	
-	fprintf(fp_out,"Matricula: %s,Nombre: %s,Examen: %s,Calificacion: %d, PuntosTotales: %d, PuntoObtenidos: %d, Tiempo: %f",cuentaAlumno,nombreAlumno, nombreExamen_1, (score/totscore*10),totscore, score, segundos); 
+	fprintf(fp_out,"%s,%s,%s,%d,%d,%d,%f,\n",cuentaAlumno,nombreAlumno, nombreExamen_1, (score/totscore*10),totscore, score, segundos); 
 	printf("\n\n");
 	
 	fclose(fpin);
