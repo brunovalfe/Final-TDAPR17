@@ -120,7 +120,7 @@ void creadorExamenes(void)
 	strcat(nuevoExamen,"\0");
 	fp_out=fopen(nuevoExamen,"wt");
 
-	int rvalue[numeroLineas];
+	int rvalue[numeroLineas];//intentamos declarar un arreglo dinamico de la manera int *rvalue=malloc(numeroLineas*sizeof(int)); pero exisitian problemas de uso de memoria.
 	RVALUE(numeroLineas, rvalue);
 	
 	for(cont=0;cont<numeroPreguntas;cont++)//
@@ -140,14 +140,7 @@ void creadorExamenes(void)
 			cont2++;
 		}
 	}
-/*
-	for(cont=0;cont<numeroPreguntas;cont++)//Es
-	{
-		fgets(lineaArchivo,300,fp_in);
-		fprintf(fp_out,"%d,",cont+1);
-		fputs(lineaArchivo,fp_out);
-	}
-*/
+
 	system("clear");
 	printf("\nSe creó el archivo '%s' con '%d' preguntas\n\n",nuevoExamen,numeroPreguntas);
 	fclose(fp_in);
@@ -173,10 +166,11 @@ void aplicadorExamenes(void)
 	int idPregunta;
 	char nombreExamen_1[30];
 	char numeroCuenta[10];
-	char lineaAlumnos[100], buff[150];
+	char lineaAlumnos[220], buff[180];
 	char cuentaAlumno[10],nombreAlumno[30];
 
-	double segundos = 0, milis=0;
+	double segundos = 0;
+	float calificacion;
 
 	struct timeval final, inicio;
  	srand(time(0));
@@ -193,7 +187,7 @@ void aplicadorExamenes(void)
 	scanf("%s",numeroCuenta);
 	getchar();
 
-	while((fgets(lineaAlumnos,100,sbank))!=NULL)
+	while((fgets(lineaAlumnos,220,sbank))!=NULL)
 //	while(fscanf(sbank,"%[^,],%[^,],\n",cuentaAlumno,nombreAlumno)>=0)//Forma alternativa de lectura de campos del archivo. Si recibe los campos pero no entra en la condicion 'if((strcmp...)
 	{
 
@@ -234,7 +228,7 @@ void aplicadorExamenes(void)
 		fscanf(fpin,"%d,%[^,],%[^,],%[^,],%[^,],%[^,],%d", &qlist[cont].qnum, qlist[cont].q, qlist[cont].cans.ans, qlist[cont].b.ans, qlist[cont].c.ans, qlist[cont].d.ans, &qlist[cont].pts);
 	}
 	//rvalue= malloc(numeroLineas*sizeof(int));
-	int rvalue[numeroLineas];
+	int rvalue[numeroLineas];//intentamos declarar un arreglo dinamico de la manera int *rvalue=malloc(numeroLineas*sizeof(int)); pero exisitian problemas de uso de memoria.
 	RVALUE(numeroLineas, rvalue);
 
 	system("clear");
@@ -267,7 +261,7 @@ void aplicadorExamenes(void)
 			}
 
 		}
-		printf("Ingresa el inciso de la respuesta correcta: ");
+		printf("Ingresa la letra mayuscula de la respuesta correcta: ");
 		scanf("%c", &r);
 		getchar();
 		if(r == qlist[rvalue[cont]].cans.l)
@@ -280,7 +274,7 @@ void aplicadorExamenes(void)
 	
 	if((fp_out=fopen("informeAlumno.txt","rt"))!=NULL)
 	{
-		while(fgets(lineaAlumnos,100,fp_out)!=NULL)
+		while(fgets(lineaAlumnos,220,fp_out)!=NULL)
 		{
 			sscanf(lineaAlumnos,"%[^,],%[^\n],\n",cuentaAlumno, buff);
 			if((strcmp(cuentaAlumno,numeroCuenta))==0)
@@ -293,13 +287,15 @@ void aplicadorExamenes(void)
 	}
 	fp_out=fopen("informeAlumno.txt","a");
 	
-	fprintf(fp_out,"%s,%s,%s,%d,%d,%d,%f,\n",cuentaAlumno,nombreAlumno, nombreExamen_1, (score/totscore*10),totscore, score, segundos); 
+	calificacion=(((float)score)/totscore)*10;
+	fprintf(fp_out,"%s,Nombre: %s, Examen: %s,Calificacion: %f, PuntosTotales: %d, PuntosObtenidos:%d,Tiempo: %f,\n",cuentaAlumno,nombreAlumno, nombreExamen_1, calificacion,totscore, score, segundos); 
 	printf("\n\n");
 	fclose(fpin);
 	fclose(fp_out);
+	
 
 	printf("\t[Calificador]\n\n");
-	printf("Calificacion: %d\n\nPuntos Obtenidos: %d\nPuntos Totales: %d\nTiempo: %f\n",(score/totscore*10), score,totscore, segundos);
+	printf("Calificacion: %f\n\nPuntos Obtenidos: %d\nPuntos Totales: %d\nTiempo: %f\n",calificacion, score,totscore, segundos);
 	printf("\nPresiona enter para continuar.\n");
 	getchar();
 }
