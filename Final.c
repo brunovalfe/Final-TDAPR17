@@ -76,7 +76,7 @@ void creadorExamenes(void)
 	FILE *fp_in;
 	FILE *fp_out;
 
-	int cont, cont2=0;
+	int cont, cont2=0, key;
 	int numeroPreguntas,numeroLineas;
 	char filename[30];
 	char nuevoExamen[30];
@@ -119,29 +119,35 @@ void creadorExamenes(void)
 	getchar();
 	strcat(nuevoExamen,"\0");
 	fp_out=fopen(nuevoExamen,"wt");
-/*
+
 	int rvalue[numeroLineas];
 	RVALUE(numeroLineas, rvalue);
-
-	for(cont=0;cont<numeroPreguntas;cont++)//Es
+	
+	for(cont=0;cont<numeroPreguntas;cont++)//
 	{
-		fgets(lineaArchivo,300,fp_in);
-		cont2++;
-		if(rvalue[cont]==cont)
-		{
-			fprintf(fp_out,"%d,",cont+1);
-			fputs(lineaArchivo,fp_out);
-			cont2=0;
+		key=0;		
+		while(key==0)
+		{		
+			fgets(lineaArchivo,300,fp_in);
+			if(rvalue[cont]==cont2)
+			{
+				fprintf(fp_out,"%d,",cont+1);
+				fputs(lineaArchivo,fp_out);
+				cont2=0;
+				key=1;
+				fseek(fp_in, 0, SEEK_SET);
+			}
+			cont2++;
 		}
 	}
-*/
+/*
 	for(cont=0;cont<numeroPreguntas;cont++)//Es
 	{
 		fgets(lineaArchivo,300,fp_in);
 		fprintf(fp_out,"%d,",cont+1);
 		fputs(lineaArchivo,fp_out);
 	}
-
+*/
 	system("clear");
 	printf("\nSe creó el archivo '%s' con '%d' preguntas\n\n",nuevoExamen,numeroPreguntas);
 	fclose(fp_in);
